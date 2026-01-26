@@ -11,6 +11,7 @@ import { Header } from '@/components/layout/Header';
 import { Button } from '@/components/ui/Button';
 import { BoardForm } from '@/components/boards/BoardForm';
 import { BoardTableView } from '@/components/boards/BoardTableView';
+import { StatusColumns } from '@/components/boards/StatusColumns';
 import {
   DndContext,
   closestCenter,
@@ -35,7 +36,7 @@ export default function BoardPage() {
   const { boards, loading: boardsLoading, updateBoard } = useBoards();
   const [isListFormOpen, setIsListFormOpen] = useState(false);
   const [isBoardFormOpen, setIsBoardFormOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<'kanban' | 'table'>('kanban');
+  const [viewMode, setViewMode] = useState<'kanban' | 'status' | 'table'>('status');
   const supabase = createClient();
 
   const board = boards.find(b => b.id === boardId);
@@ -116,16 +117,22 @@ export default function BoardPage() {
           </div>
           <div className="flex gap-2">
             <Button
+              variant={viewMode === 'status' ? 'secondary' : 'ghost'}
+              onClick={() => setViewMode('status')}
+            >
+              Par statut
+            </Button>
+            <Button
               variant={viewMode === 'kanban' ? 'secondary' : 'ghost'}
               onClick={() => setViewMode('kanban')}
             >
-              Kanban
+              Par liste
             </Button>
             <Button
               variant={viewMode === 'table' ? 'secondary' : 'ghost'}
               onClick={() => setViewMode('table')}
             >
-              Table
+              Tableau
             </Button>
             <Button variant="secondary" onClick={() => setIsBoardFormOpen(true)}>
               Edit Board
@@ -136,6 +143,8 @@ export default function BoardPage() {
 
         {viewMode === 'table' ? (
           <BoardTableView boardId={boardId} lists={lists} />
+        ) : viewMode === 'status' ? (
+          <StatusColumns boardId={boardId} lists={lists} />
         ) : (
           <DndContext
             sensors={sensors}

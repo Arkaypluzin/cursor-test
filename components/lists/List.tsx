@@ -147,7 +147,14 @@ export function List({ list, onUpdate, onDelete, onCardReorder }: ListProps) {
               </div>
             ) : (
               cards.map((card) => (
-                <Card key={card.id} card={card} onDelete={deleteCard} onUpdate={updateCard} />
+                <Card 
+                  key={card.id} 
+                  card={card} 
+                  onDelete={(id) => {
+                    deleteCard(id);
+                  }} 
+                  onUpdate={updateCard} 
+                />
               ))
             )}
           </div>

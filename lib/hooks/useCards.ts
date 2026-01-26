@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { Card, CardAssignment } from '@/types/database';
+import { showNotification } from '@/lib/utils/notifications';
 
 export function useCards(listId: string | null) {
   const [cards, setCards] = useState<Card[]>([]);
@@ -151,10 +152,13 @@ export function useCards(listId: string | null) {
       if (deleteError) throw deleteError;
 
       setCards((prev) => prev.filter(card => card.id !== id));
+      showNotification('Tâche supprimée avec succès', 'success');
       return { error: null };
     } catch (err: any) {
       const errorMsg = err.message || 'Failed to delete card';
       setError(errorMsg);
+      showNotification(errorMsg, 'error');
+      console.error('Error deleting card:', err);
       return { error: errorMsg };
     }
   };
